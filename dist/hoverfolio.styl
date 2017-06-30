@@ -1,0 +1,39 @@
+/*------------------------------------------------------------------
+[Master Stylesheet]
+
+Project: Hoverfolio
+Author:	VLThemes
+Version: 1.0
+Date: 28/06/2017
+
+-------------------------------------------------------------------*/
+
+.vl-hoverfolio
+	position relative
+	overflow hidden
+	
+.vl-hoverfolio .vl-hoverfolio-inner,
+.vl-hoverfolio .vl-hoverfolio-image
+	position absolute
+	top 0
+	left 0
+	right 0
+	bottom 0
+	display flex
+
+.vl-hoverfolio .vl-hoverfolio-inner
+	justify-content space-between
+	flex-wrap wrap
+	z-index 2
+	.vl-hoverfolio-link
+		flex 1
+
+.vl-hoverfolio .vl-hoverfolio-image
+	align-items center
+	justify-content center
+	z-index 1
+	.vl-hoverfolio-image-hide
+		display none
+	.vl-hoverfolio-image-show
+		display block
+	
