@@ -10,13 +10,13 @@ License: MIT https://opensource.org/licenses/MIT
 	var methods = {
 		init: function(options) {
 			var $root = $(this);
+			var hovered = null;
 			var settings = $.extend({
-				activeIndex: 2, //Active element index
+				activeIndex: 4, //Active element index
 				imageMaxWidth: 55, //Maximum height of the image
 				imageMaxHeight: 100, //Maximum width of the image
 				randomWidth: true, //Enable random mode
-				randomInterval: [16, 40], //Maximum width of the image when hovering in percent (min, max)
-				debug: false //Debug mode
+				randomInterval: [16, 40] //Maximum width of the image when hovering in percent (min, max)
 			}, options);
 			return this.each(function() {
 				var initMethods = {
@@ -24,69 +24,51 @@ License: MIT https://opensource.org/licenses/MIT
 						var $main = $(this);
 						initMethods.prepareHoverfolio.apply($main);
 						initMethods.buildHoverfolio.apply($main);
+						if(settings.activeIndex > 0){
+							initMethods.activeItem.apply($main);
+						}
 					},
 					prepareHoverfolio: function(){
 						var self = $(this);
 						self.addClass('vl-hoverfolio');
 						self.wrapInner('<div class="vl-hoverfolio-inner">');
 						self.find('a').addClass('vl-hoverfolio-link');
-						self.append('<div class="vl-hoverfolio-image"></div>');
+						self.append('<div class="vl-hoverfolio-image"><img src="" alt=""></div>');
 					},
 					buildHoverfolio: function(){
 						var self = $(this),
 							linkElement = self.find('a.vl-hoverfolio-link'),
-							imageContainer = self.find('.vl-hoverfolio-image');
-	
-						linkElement.each(function(index){
-							var el = $(this),
-								imageSrc = el.data('hoverfolio-image-src'),
-								style = 'max-height:'+settings.imageMaxHeight+'%;';
-							if(settings.randomWidth){
-								var randomValue = Math.floor(Math.random() * (settings.randomInterval[1] - settings.randomInterval[0] + 1)) + settings.randomInterval[0];
-								style += 'max-width:'+randomValue+'%;';
-							}else{
-								style += 'max-width:'+settings.imageMaxWidth+'%;';
-							}
-							imageContainer.append('<img src="'+imageSrc+'" alt="" style="'+style+'">');
-						});	
-						var appendedImage = imageContainer.find('img');
-							appendedImage.addClass('vl-hoverfolio-image-hide');
-						if (typeof imagesLoaded !== 'undefined') {
-							appendedImage.imagesLoaded(function(){
-								appendedImage.eq(settings.activeIndex - 1).toggleClass('vl-hoverfolio-image-hide vl-hoverfolio-image-show');
-							}).progress(function(instance, image) {
-								var result = image.isLoaded ? 'loaded' : 'broken';
-								settings.debug ? console.log('Image is ' + result + ' for ' + image.img.src) : '';
-							});					
-						}else{
-							appendedImage.on('load', function() {
-								appendedImage.eq(settings.activeIndex - 1).toggleClass('vl-hoverfolio-image-hide vl-hoverfolio-image-show');
-							});						
-						}
-						linkElement.each(function(index){
-							var el = $(this);
-							el.on({
-								mouseenter: function(){
-									self.addClass('hovered');
-									appendedImage.removeClass('vl-hoverfolio-image-show').addClass('vl-hoverfolio-image-hide');
-									if (typeof imagesLoaded !== 'undefined') {
-										appendedImage.imagesLoaded(function(){
-											appendedImage.eq(index).removeClass('vl-hoverfolio-image-hide').addClass('vl-hoverfolio-image-show');
-										}).progress(function(instance, image) {
-											var result = image.isLoaded ? 'loaded' : 'broken';
-											settings.debug ? console.log('Image is ' + result + ' for ' + image.img.src) : '';
-										});					
-									}else{
-										appendedImage.on('load', function() {
-											appendedImage.show();
-										});						
-									}
-								},
-								mouseleave: function(){
-									self.removeClass('hovered');
+							image = self.find('.vl-hoverfolio-image img');
+						linkElement.on('mouseenter', function(){
+							self.addClass('hovered');
+							var src = $(this).data('image');
+							image.attr('src', src);
+							if(src != hovered){
+								if(true == settings.randomWidth){
+									var randomWidth = Math.floor(Math.random() * (settings.randomInterval[1] - settings.randomInterval[0] + 1)) + settings.randomInterval[0];
+									image.css('max-width', randomWidth + '%');
+								}else{
+									image.css({
+										'max-width': settings.imageMaxWidth + '%',
+										'max-height': settings.imageMaxHeight + '%'
+									});
 								}
-							});
+								image.on('load', function() {
+									image.stop().animate({
+										opacity: 1
+									}, 0);
+								});
+								hovered = src;
+							}	
 						});
+						linkElement.on('mouseleave', function(){
+							self.removeClass('hovered');
+						});
+					},
+					activeItem: function(){
+						var self = $(this),
+							linkElement = self.find('a.vl-hoverfolio-link');
+						linkElement.eq(settings.activeIndex - 1).trigger('mouseenter');
 					}
 				};
 				initMethods.init.apply(this);

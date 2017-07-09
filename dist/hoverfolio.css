@@ -33,9 +33,6 @@ Date: 28/06/2017
   justify-content: center;
   z-index: 1;
 }
-.vl-hoverfolio .vl-hoverfolio-image .vl-hoverfolio-image-hide {
-  display: none;
-}
-.vl-hoverfolio .vl-hoverfolio-image .vl-hoverfolio-image-show {
-  display: block;
+.vl-hoverfolio .vl-hoverfolio-image img {
+  opacity: 0;
 }
