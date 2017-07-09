@@ -42,8 +42,8 @@ License: MIT https://opensource.org/licenses/MIT
 						linkElement.on('mouseenter', function(){
 							self.addClass('hovered');
 							var src = $(this).data('image');
-							image.attr('src', src);
 							if(src != hovered){
+								image.attr('src', src);
 								if(true == settings.randomWidth){
 									var randomWidth = Math.floor(Math.random() * (settings.randomInterval[1] - settings.randomInterval[0] + 1)) + settings.randomInterval[0];
 									image.css('max-width', randomWidth + '%');
